@@ -1,0 +1,26 @@
+@import "~bootstrap/scss/bootstrap";
+
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+.container {
+  margin-top: 1em;
+}
+
+textarea {
+  height: 200px;
+  margin-bottom: 1em;
+}
+
+#fix-word-container.hidden {
+  display: none;
+}
+
+#new-word.hidden {
+  display: none;
+}
+
+#correct-word.hidden {
+  display: none;
+}

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sicniki Sumniki</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./main.scss">
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Aplikacija za popravljanje besed s sičniki v šumnike</h1>
+        <div class="form-group">
+            <textarea name="text" id="text" class="form-control" spellcheck="true"></textarea>
+        </div>
+        <div class="form-group text-right">
+            <button type="button" id="fix-word" class="btn btn-outline-secondary">Popravi označeno besedo</button>
+            <button type="button" id="fix-text" class="btn btn-primary">Poskus samodejnega popravka besedila</button>
+            <button type="button" id="confirm-text" class="btn btn-outline-secondary">Potrdi</button>
+        </div>
+        <div class="form-group hidden" id="fix-word-container">
+            <h2>Izberi pravilno besedo ali pa vnesi novo</h2>
+            <p>Ce vneses novo, s tem pomagas izboljsati funkcionalnost aplikacije, saj tebi ali komu drugemu naslednjic iste besede ne bo treba vnasati, ampak jo bo(s) lahko kar izbral. Hvala :)</p>
+            <select name="correct-word hidden" id="correct-word" class="form-control" size="5"></select>
+            <div class="input-group hidden">
+                <input type="text" name="new-word" id="new-word" class="form-control" placeholder="Izpolni, ce beseda se ne obstaja">
+                <button type="button" id="confirm-new-word" class="btn btn-outline-secondary">Potrdi</button>
+            </div>
+        </div>
+    </div>
+    <script src="./main.js"></script>
+</body>
+</html>
