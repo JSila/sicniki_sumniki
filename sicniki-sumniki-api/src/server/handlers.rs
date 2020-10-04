@@ -1,5 +1,4 @@
-use hyper::header::ContentType;
-use iron::{*, status::Status};
+use iron::{*, status::Status, headers::ContentType};
 use serde::{Deserialize, Serialize};
 
 use crate::{Repository, Service};

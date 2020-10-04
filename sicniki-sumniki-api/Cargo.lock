@@ -1303,7 +1303,6 @@ dependencies = [
  "bodyparser",
  "clap",
  "dotenv",
- "hyper",
  "iron",
  "iron-cors",
  "mysql",
