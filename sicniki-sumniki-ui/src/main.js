@@ -1,130 +1,38 @@
-const btnFixWord =        window["fix-word"];
-const btnFixText =        window["fix-text"];
-const btnConfirmText =    window["confirm-text"];
-const textarea =          window["text"];
-const fixWordContainer =  window["fix-word-container"];
-const correctWordSelect = window["correct-word"];
-const newWordInput =      window["new-word"];
-const btnConfirmNewWord = window["confirm-new-word"];
+import React, {useRef} from 'react'
+import ReactDOM from 'react-dom'
+import {Provider, useDispatch, useSelector} from 'react-redux'
 
-btnFixWord.addEventListener("click", onBtnFixWordClicked, false);
-btnFixText.addEventListener("click", onBtnFixTextClicked, false);
-btnConfirmText.addEventListener("click", onBtnConfirmTextClicked, false);
-correctWordSelect.addEventListener('change', onCorrectWordSelected, false);
-btnConfirmNewWord.addEventListener('click', onConfirmNewWordClicked, false);
+import store, {setText} from './store'
 
-var selectionStart = 0;
-var selectionEnd = 0;
+import Alert from "./components/Alert";
+import Actions, {ACTION} from "./components/Actions";
+import FixWord from "./components/FixWord";
+import Instructions from "./components/Instructions";
 
+const App = function() {
 
-function onBtnFixWordClicked(event) {
-    selectionStart = textarea.selectionStart;
-    selectionEnd = textarea.selectionEnd;
+    const action = useSelector(store => store.action)
+    const alert = useSelector(store => store.alert)
+    const text = useSelector(store => store.text)
+    const dispatch = useDispatch()
 
-    if (selectionEnd === selectionStart) {
-        alert("Najprej izberi besedo!");
-        return;
-    }
+    const textarea = useRef()
 
-    let word = textarea.value.substring(selectionStart, selectionEnd);
-
-    if (word.split(/\s+/).length > 1) {
-        alert("Izberi samo eno besedo!");
-    }
-
-    let lowercaseWord = word.toLowerCase();
-
-    if (!lowercaseWord.includes("s") && !lowercaseWord.includes("c") && !lowercaseWord.includes("z") && !lowercaseWord.includes("š") && !lowercaseWord.includes("č") && !lowercaseWord.includes("ž")) {
-        alert("Beseda ne vsebuje sicnikov ali sumnikov, tako da aplikacija z njo nima kaj delati!");
-        return;
-    }
-
-    window.fetch(`http://localhost:3000/words/${word}`)
-        .then(resp => resp.json())
-        .then(data => {
-            switch (data.similar_words.length) {
-                case 0:
-                    fixWordContainer.classList.remove("hidden");
-                    newWordInput.classList.remove("hidden");
-                    break;
-                case 1:
-                    textarea.value = `${textarea.value.substring(0, selectionStart)}${data.similar_words[0]}${textarea.value.substring(selectionEnd)}`;
-                    break;
-                default:
-                    correctWordSelect.innerHTML = data.similar_words.map(w => `<option value="${w}">${w}</option>`);
-
-                    fixWordContainer.classList.remove("hidden");
-                    correctWordSelect.classList.remove("hidden");
-                    newWordInput.classList.remove("hidden");
-                    break;
-            }
-        });
+    return (
+        <>
+            {alert && <Alert />}
+            <textarea ref={textarea} value={text} onChange={e => dispatch(setText(e.target.value))} />
+            <Actions textarea={textarea} />
+            {action === ACTION.FIX_WORD && <FixWord />}
+            {action === ACTION.INSTRUCTIONS && <Instructions />}
+        </>
+    )
 }
 
-function onCorrectWordSelected(event) {
-    textarea.value = `${textarea.value.substring(0, selectionStart)}${event.target.selectedOptions[0].value}${textarea.value.substring(selectionEnd)}`;
+const Root = (
+    <Provider store={store}>
+        <App/>
+    </Provider>
+)
 
-    resetUI();
-}
-
-function onConfirmNewWordClicked(event) {
-    const word = newWordInput.value;
-
-    if (word.trim() === "") {
-        alert("Pozabil si vpisati besedo!");
-        return;
-    }
-
-    textarea.value = `${textarea.value.substring(0, selectionStart)}${word}${textarea.value.substring(selectionEnd)}`;
-
-    resetUI();
-}
-
-function onBtnFixTextClicked(event) {
-    const word = textarea.value;
-
-    if (word.trim() === "") {
-        alert("Pozabil si vpisati besedilo!");
-        return;
-    }
-
-    fetch("http://localhost:3000/text/fix", {
-        method: "POST",
-        body: JSON.stringify({text: textarea.value})
-    })
-    .then(resp => resp.json())
-    .then(resp => {
-        textarea.value = resp.text;
-    })
-    .finally(() => {
-        resetUI();
-    });
-}
-
-function onBtnConfirmTextClicked(event) {
-    const word = textarea.value;
-
-    if (word.trim() === "") {
-        alert("Pozabil si vpisati besedilo!");
-        return;
-    }
-
-    fetch("http://localhost:3000/text/confirm", {
-        method: "POST",
-        body: JSON.stringify({text: textarea.value})
-    })
-    .then(() => {
-        alert("Hvala za prijaznost! :)")
-    })
-    .finally(() => {
-        resetUI();
-    });
-}
-
-function resetUI() {
-    selectionStart = 0;
-    selectionEnd = 0;
-    fixWordContainer.classList.add("hidden");
-    correctWordSelect.classList.add("hidden");
-    newWordInput.classList.add("hidden");
-}
+ReactDOM.render(Root, document.querySelector(".container"))
