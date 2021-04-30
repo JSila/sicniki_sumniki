@@ -41,6 +41,7 @@ const appSlice = createSlice({
                 state.selection = ""
                 state.action = ""
                 state.similarWords = []
+                state.newWord = ""
             }
         },
         setNewWord(state, action) {

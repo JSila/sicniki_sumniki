@@ -1,36 +1,35 @@
 const CSZ: &str = "cszCSZ";
 const CSZ_WITH_CARON: &str = "cszčšžCSZČŠŽ";
+const ALPHABET: &str = "ABCĆDEFGHIJKLMNOPQRSŠTUVWXYZŽ";
 
 pub fn convert_to_czs(word: &str) -> String {
-    word.replace("š", "s")
-        .replace("č", "c")
-        .replace("ž", "z")
+    word.replace("š", "s").replace("č", "c").replace("ž", "z")
 }
 
 pub fn contains_czs(word: &str) -> bool {
-    word.chars()
-        .any(|c| CSZ.contains(c))
+    word.chars().any(|c| CSZ.contains(c))
 }
 
 pub fn contains_czs_plus_with_caron(word: &str) -> bool {
-    word.chars()
-        .any(|c| CSZ_WITH_CARON.contains(c))
+    word.chars().any(|c| CSZ_WITH_CARON.contains(c))
 }
 
 pub fn fix_case(target: &str, desired_format: &str) -> String {
-    target.chars()
+    target
+        .chars()
         .zip(desired_format.chars())
         .map(|(a, b)| {
-            if "ABCĆDEFGHIJKLMNOPQRSŠTUVWXYZŽ".contains(b) {
+            if ALPHABET.contains(b) {
                 a.to_uppercase().next().unwrap()
             } else {
                 a
             }
-        }).collect()
+        })
+        .collect()
 }
 
 #[cfg(test)]
-mod util_tests {
+mod tests {
     use super::*;
 
     #[test]

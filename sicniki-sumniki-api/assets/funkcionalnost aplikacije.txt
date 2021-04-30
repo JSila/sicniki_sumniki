@@ -1,9 +1,0 @@
-Aplikacija, ki bo vnosni tekst precesila in pri vsaki besedi, ki vsebuje c, s ali z, ponudila pretvorbo v sumnik.
-
-  1. Predlaga naj besede, ki obstajajo (ne da izpise vse permutacije besede s ali brez sumnikov). Naj tudi omogoca, da za vsak sicnik dolocis, ali je mogoce sumnik.
-  2. Po shranitvi se besede s sumniki in tudi sam os sicniki zapisejo v bazo, da bo naslednjic boljsi autocomplete. Vsaka beseda naj ima tudi ranking uporabe.
-  3. Aplikacija naj omogoca stikalo, s katerim poves, da besedilo ne potrebuje popravljanja sicnikov in bo tako se izvedel samo 2. korak.
-  4. Aplikacija naj omogoca, da se besedilo poskusa najprej popraviti samo (pri tem naj si ne izmisljuje novih besed, temvec uporabi le tiste, ki so v bazi).
-  5. Naj bo obcutljiva na male in velike crke (ce je crka velika, sklepa iz texta)
-  6. Naj omogoca vnos besed v bazo (locene z vejico ali pa preko datoteke)
-  7. V bazi naj se shranjuje tudi sicna verzija besede da se bo lahko hitro najdlo

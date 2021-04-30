@@ -1,24 +1,28 @@
-use iron::{Chain, Iron};
-use iron_cors::CorsMiddleware;
-use router::Router;
+use rocket::http::Method;
+use rocket_cors::{AllowedHeaders, AllowedOrigins};
 
-use sicniki_sumniki::handlers::*;
+use sicniki_sumniki::handlers;
 
 fn main() {
-    dotenv::dotenv().unwrap();
+    dotenv::dotenv().ok();
 
-    let mut router = Router::new();
+    let frontend_app_url = std::env::var("FRONTEND_APP_URL").unwrap();
 
-    router.post("/text/fix", fix_text, "fix-text");
-    router.post("/text/confirm", confirm_text, "confirm-text");
+    let cors = rocket_cors::CorsOptions {
+        allowed_origins: AllowedOrigins::some_exact(&[frontend_app_url]),
+        allowed_methods: vec![Method::Get, Method::Post]
+            .into_iter()
+            .map(From::from)
+            .collect(),
+        allowed_headers: AllowedHeaders::some(&["Authorization", "Accept"]),
+        allow_credentials: true,
+        ..Default::default()
+    }
+    .to_cors()
+    .unwrap();
 
-    router.post("/words", save_word, "save-word");
-    router.get("/words/:word", get_word, "get-word");
-
-    let mut chain = Chain::new(router);
-    chain.link_around(CorsMiddleware::with_allow_any());
-
-    Iron::new(chain)
-        .http(("localhost", 3000))
-        .unwrap();
+    rocket::ignite()
+        .mount("/", handlers::routes())
+        .attach(cors)
+        .launch();
 }

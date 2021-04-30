@@ -23,7 +23,7 @@ const Actions = props => {
             return
         }
 
-        window.fetch(`http://localhost:3000/words/${selection.word}`)
+        window.fetch(`${process.env.BACKEND_APP_URL}/words/${selection.word}`)
             .then(resp => resp.json())
             .then(data => {
                 switch (data.similar_words.length) {
@@ -48,15 +48,15 @@ const Actions = props => {
     const confirmText = () => {
         if (!text.trim()) {
             dispatch(setAction())
-            dispatch(setAlert({ message: "Pozabil si vpisati besedilo!", type: "warning"}))
+            dispatch(setAlert({ message: "Pozabili ste vpisati besedilo!", type: "warning"}))
             return
         }
 
-        fetch("http://localhost:3000/text/confirm", {
+        window.fetch(`${process.env.BACKEND_APP_URL}/text/confirm`, {
             method: "POST",
             body: JSON.stringify({text: text})
         }).then(() => {
-            dispatch(setAlert({ message: "Hvala za prijaznost! :)", type: "success"}))
+            dispatch(setAlert({ message: "Operacija je bila upešno izvedena.", type: "success"}))
         }).finally(() => {
             dispatch(setAction())
         })
@@ -65,10 +65,10 @@ const Actions = props => {
     const autofixText = () => {
         if (!text.trim()) {
             dispatch(setAction())
-            dispatch(setAlert({ message: "Pozabil si vpisati besedilo!", type: "warning"}))
+            dispatch(setAlert({ message: "Pozabili ste vpisati besedilo!", type: "warning"}))
             return
         }
-        fetch("http://localhost:3000/text/fix", {
+        window.fetch(`${process.env.BACKEND_APP_URL}/text/fix`, {
             method: "POST",
             body: JSON.stringify({text: text})
         })
@@ -91,7 +91,7 @@ const Actions = props => {
             <button
                 data-action={ACTION.CONFIRM_TEXT}
                 onClick={confirmText}
-                title="V primeru rocno popravljenega besedila">
+                title="V primeru ročno popravljenega besedila">
                 Potrdi pravilnost
             </button>
             <button
@@ -109,19 +109,19 @@ function getSelection(el) {
     const selectionEnd = el.selectionEnd;
 
     if (selectionEnd === selectionStart) {
-        return { error: "Najprej izberi besedo!"}
+        return { error: "Najprej izberite besedo!"}
     }
 
     let word = el.value.substring(selectionStart, selectionEnd);
 
     if (word.split(/\s+/).length > 1) {
-        return { error: "Izberi samo eno besedo!"}
+        return { error: "Izberite samo eno besedo!"}
     }
 
     let lowercaseWord = word.toLowerCase();
 
     if (!lowercaseWord.includes("s") && !lowercaseWord.includes("c") && !lowercaseWord.includes("z") && !lowercaseWord.includes("š") && !lowercaseWord.includes("č") && !lowercaseWord.includes("ž")) {
-        return { error: "Beseda ne vsebuje sicnikov ali sumnikov, tako da aplikacija z njo nima kaj delati!"}
+        return { error: "Beseda ne vsebuje sičnikov ali šumnikov, tako da aplikacija z njo nima kaj delati!"}
     }
 
     return { selection: {word, selectionStart, selectionEnd} }

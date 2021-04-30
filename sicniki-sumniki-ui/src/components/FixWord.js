@@ -12,13 +12,20 @@ const FixWord = () => {
     }
 
     const handleClick = e => {
-        const newWord = e.target.value
         if (!newWord.trim()) {
-            dispatch(setAlert({ message: "Pozabil si vpisati besedo!", type: "warning"}))
+            dispatch(setAlert({ message: "Pozabili ste vpisati besedo!", type: "warning"}))
             return
         }
 
-        dispatch(setCorrectWord({ word: newWord, reset: true }))
+        window.fetch(`${process.env.BACKEND_APP_URL}/words`, {
+            method: 'post',
+            body: JSON.stringify({word: newWord})
+        })
+            .then(() => {
+                dispatch(setCorrectWord({ word: newWord, reset: true }))
+            }).finally(() => {
+                dispatch(setAction())
+            })
     }
 
     return (
@@ -26,8 +33,8 @@ const FixWord = () => {
             <select size="5" onChange={handleSelect}>
                 {similarWords.map(w => <option key={w} value={w}>{w}</option>)}
             </select>
-            <input type="text" value={newWord} onChange={e => dispatch(setNewWord(e.target.value))} placeholder="Ne obstaja? Vpisi jo tu..."/>
-            <button className="fix-word_btn" onClick={handleClick}>Potrdi</button>
+            <input type="text" value={newWord} onChange={e => dispatch(setNewWord(e.target.value))} placeholder="Ne obstaja? Vpišite jo tu..."/>
+            <button className="fix-word_btn" onClick={handleClick}>Potrdite</button>
         </div>
     )
 }
